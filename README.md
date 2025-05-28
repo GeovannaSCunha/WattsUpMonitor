@@ -3,7 +3,7 @@
 - Geovanna Silva Cunha - rm97736
 - Victor Camargo Maciel - rm98384
 
-# WattsUpMonitor
+# ⚡WattsUpMonitor
 
 Sistema de Monitoramento de Falhas de Energia Hospitalar e Alertas Cibernéticos.
 
@@ -51,11 +51,12 @@ Obs: Apenas com essas credenciais é possível acessar as funcionalidades do sis
 4. Estrutura de Pastas
 ```
 wattsupmonitor/
-├── WattsUpMonitor.csproj    # Arquivo de configuração do projeto C#
+├── .gitattributes           # Configuração de atributos Git
+├── .gitignore               # Arquivos e pastas ignorados pelo Git
 ├── Program.cs               # Código principal da aplicação
-├── README.md                # Este arquivo
-└── bin/                     # Arquivos binários gerados após a compilação
-└── obj/                     # Arquivos temporários de build
+├── README.md                # Documentação do projeto
+├── WattsUpMonitor.csproj    # Arquivo de configuração do projeto C#
+└── WattsUpMonitor.sln       # Solução que agrupa o projeto
 ```
 
 ## Funcionalidades Principais
