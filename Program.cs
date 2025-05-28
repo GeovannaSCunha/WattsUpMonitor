@@ -1,77 +1,82 @@
-﻿using System;
+// Autora: Geovanna Cunha
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace WattsUpMonitor
 {
-    // Classe base: Evento (falhas e alertas de energia no hospital)
+    // Classe base: representa um Evento genérico (falhas ou alertas no hospital)
     class Evento
     {
-        public DateTime Data { get; set; }
-        public string Descricao { get; set; }
+        public DateTime Data { get; set; } // Data e hora do evento
+        public string Descricao { get; set; } // Descrição do evento
 
+        // Construtor: inicializa o evento com a data atual e a descrição
         public Evento(string descricao)
         {
             Data = DateTime.Now;
             Descricao = descricao;
         }
 
+        // Método virtual: permite que classes derivadas sobrescrevam como exibir o evento
         public virtual void Exibir()
         {
             Console.WriteLine($"{Data} - {Descricao}");
         }
     }
 
-    // Classe derivada: Alerta (herança) com nível de criticidade
+    // Classe derivada: representa um Alerta, herda de Evento e adiciona um nível de criticidade
     class Alerta : Evento
     {
-        public string Nivel { get; set; }
+        public string Nivel { get; set; } // Nível de criticidade do alerta: Baixo, Médio ou Alto
 
+        // Construtor: inicializa a descrição e o nível do alerta
         public Alerta(string descricao, string nivel) : base(descricao)
         {
             Nivel = nivel;
         }
 
+        // Sobrescreve o método Exibir para mostrar o alerta com destaque e nível
         public override void Exibir()
         {
             Console.WriteLine($"{Data} - [ALERTA - {Nivel}] {Descricao}");
         }
     }
 
-    // Classe para registro e relatório
+    // Classe responsável por gerenciar os eventos e gerar relatórios
     class SistemaMonitoramento
     {
-        private List<Evento> eventos = new List<Evento>();
+        private List<Evento> eventos = new List<Evento>(); // Lista de eventos registrados
 
-        // Registrar falha de energia hospitalar 
+        // Método para registrar uma falha de energia hospitalar
         public void RegistrarFalha(string descricao)
         {
             eventos.Add(new Evento("[FALHA DE ENERGIA] " + descricao));
             Console.WriteLine("Falha de energia registrada com sucesso.");
         }
 
-        // Gerar alerta cibernético para falhas críticas
+        // Método para gerar um alerta cibernético em caso de ameaça
         public void GerarAlerta(string descricao, string nivel)
         {
             eventos.Add(new Alerta("[ALERTA CIBERNÉTICO] " + descricao, nivel));
             Console.WriteLine("Alerta gerado com sucesso.");
         }
 
-        // Exibir todos os logs de eventos registrados
+        // Exibe todos os logs de eventos registrados até o momento
         public void ExibirLogs()
         {
             Console.WriteLine("\n==== Logs de Eventos de Falhas e Alertas no Hospital ====");
             foreach (var e in eventos)
             {
-                e.Exibir();
+                e.Exibir(); // Chama o método Exibir, que pode ser de Evento ou Alerta
             }
         }
 
-        // Relatório resumo do status do sistema
+        // Gera um relatório resumo do status atual do sistema
         public void RelatorioStatus()
         {
-            int totalFalhas = eventos.Count(e => !(e is Alerta));
-            int totalAlertas = eventos.Count(e => e is Alerta);
+            int totalFalhas = eventos.Count(e => !(e is Alerta)); // Conta eventos que são falhas
+            int totalAlertas = eventos.Count(e => e is Alerta);   // Conta eventos que são alertas
 
             Console.WriteLine("\n==== Relatório de Status ====");
             Console.WriteLine($"Total de falhas de energia registradas: {totalFalhas}");
@@ -80,6 +85,7 @@ namespace WattsUpMonitor
         }
     }
 
+    // Classe principal do programa
     class Program
     {
         static void Main(string[] args)
@@ -87,7 +93,7 @@ namespace WattsUpMonitor
             Console.Clear();
             Console.WriteLine("\n==== Sistema de Monitoramento de Falhas de Energia Hospitalar ====\n");
 
-            // Dados pré-definidos para seleção
+            // Listas pré-definidas de setores e tipos escolha do usuário
             var setoresHospitalares = new List<string> { "UTI", "Centro Cirúrgico", "Emergência", "Enfermarias", "Laboratório", "Radiologia" };
             var tiposFalha = new List<string> { "Queda total de energia", "Queda parcial", "Flutuação de tensão", "Falha no gerador" };
             var tiposAmeaca = new List<string>
@@ -98,20 +104,24 @@ namespace WattsUpMonitor
                 "Alteração não autorizada em registros"
             };
 
+            // Simples autenticação para segurança do sistema
             Console.Write("Usuário: ");
             string usuario = Console.ReadLine();
             Console.Write("Senha: ");
             string senha = Console.ReadLine();
 
+            // Verifica se o usuário e senha são válidos
             if (usuario != "admin" || senha != "123")
             {
                 Console.WriteLine("Login inválido. Encerrando...");
-                return;
+                return; // Encerra o programa se o login falhar
             }
 
+            // Instancia o sistema de monitoramento
             SistemaMonitoramento sistema = new SistemaMonitoramento();
-            bool continuar = true;
+            bool continuar = true; // Controle do loop principal
 
+            // Loop principal do menu
             while (continuar)
             {
                 Console.WriteLine("\nSelecione uma opção:");
@@ -132,7 +142,7 @@ namespace WattsUpMonitor
                             Console.Clear();
                             Console.WriteLine("\n=== Registrar Falha de Energia ===\n");
 
-                            // Seleção de setor
+                            // Exibe lista de setores e permite seleção
                             Console.WriteLine("Setores disponíveis:");
                             for (int i = 0; i < setoresHospitalares.Count; i++)
                             {
@@ -142,7 +152,7 @@ namespace WattsUpMonitor
                             int setorIndex = int.Parse(Console.ReadLine()) - 1;
                             string setor = setoresHospitalares[setorIndex];
 
-                            // Seleção de tipo de falha
+                            // Exibe tipos de falha e permite seleção
                             Console.WriteLine("\nTipos de falha:");
                             for (int i = 0; i < tiposFalha.Count; i++)
                             {
@@ -152,10 +162,11 @@ namespace WattsUpMonitor
                             int falhaIndex = int.Parse(Console.ReadLine()) - 1;
                             string tipoFalha = tiposFalha[falhaIndex];
 
-                            // Detalhes adicionais
+                            // Solicita detalhes adicionais da falha
                             Console.Write("\nInforme detalhes adicionais (opcional): ");
                             string detalhes = Console.ReadLine();
 
+                            // Monta a descrição completa do evento
                             string descricao = $"Setor: {setor} | Tipo: {tipoFalha}";
                             if (!string.IsNullOrWhiteSpace(detalhes))
                             {
@@ -169,7 +180,7 @@ namespace WattsUpMonitor
                             Console.Clear();
                             Console.WriteLine("\n=== Gerar Alerta Cibernético ===\n");
 
-                            // Seleção de ameaça
+                            // Exibe tipos de ameaça e permite seleção
                             Console.WriteLine("Tipos de ameaça cibernética:");
                             for (int i = 0; i < tiposAmeaca.Count; i++)
                             {
@@ -179,20 +190,21 @@ namespace WattsUpMonitor
                             int ameacaIndex = int.Parse(Console.ReadLine()) - 1;
                             string tipoAmeaca = tiposAmeaca[ameacaIndex];
 
-                            // Nível de alerta
+                            // Solicita o nível de alerta
                             Console.Write("\nNível do alerta (1-Baixo, 2-Médio, 3-Alto): ");
                             string nivel = Console.ReadLine() switch
                             {
                                 "1" => "Baixo",
                                 "2" => "Médio",
                                 "3" => "Alto",
-                                _ => throw new ArgumentException("Opção inválida")
+                                _ => throw new ArgumentException("Opção inválida") // Lança erro se a opção for inválida
                             };
 
-                            // Detalhes adicionais
+                            // Solicita detalhes adicionais do alerta
                             Console.Write("\nInforme detalhes adicionais (opcional): ");
                             string detalhesAmeaca = Console.ReadLine();
 
+                            // Monta a descrição completa do alerta
                             string descricaoAmeaca = $"Ameaça: {tipoAmeaca}";
                             if (!string.IsNullOrWhiteSpace(detalhesAmeaca))
                             {
@@ -204,16 +216,16 @@ namespace WattsUpMonitor
 
                         case 3:
                             Console.Clear();
-                            sistema.ExibirLogs();
+                            sistema.ExibirLogs(); // Mostra todos os eventos registrados
                             break;
 
                         case 4:
                             Console.Clear();
-                            sistema.RelatorioStatus();
+                            sistema.RelatorioStatus(); // Exibe resumo de falhas e alertas
                             break;
 
                         case 5:
-                            continuar = false;
+                            continuar = false; // Sai do loop e encerra o programa
                             break;
 
                         default:
@@ -221,6 +233,7 @@ namespace WattsUpMonitor
                             break;
                     }
                 }
+                // Tratamento de erros para entradas inválidas
                 catch (FormatException)
                 {
                     Console.WriteLine("Erro: entrada inválida. Por favor, digite um número.");
@@ -239,7 +252,7 @@ namespace WattsUpMonitor
                 }
             }
 
-            Console.WriteLine("Sistema encerrado.");
+            Console.WriteLine("Sistema encerrado."); // Mensagem final de encerramento
         }
     }
 }
